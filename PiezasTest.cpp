@@ -61,7 +61,7 @@ TEST(PiezasTest, placeOneCheckTurn){
 //tests reset game function, does NOT change the turn
 //play a piece, reset the board, confirm the spot is blank,
 //and play a new piece down that row and confirm that the droppiece
-//didnt break
+//didnt breakcleear
 TEST(PiezasTest, resetGame){
 	Piezas play;
 	Piece turn = X;
@@ -72,5 +72,126 @@ TEST(PiezasTest, resetGame){
 	turn = O;
 	ASSERT_EQ(turn, play.dropPiece(0));
 	ASSERT_EQ(turn, play.pieceAt(0, 0));
+}
 
+
+//place a bunch of pieces, and then call gameState
+//should return Invalid as game is not over
+TEST(PiezasTest, nonEndedGameState){
+	Piezas play;
+	for(int i = 0; i<2; i++){
+		play.dropPiece(0);
+		play.dropPiece(2);
+		play.dropPiece(3);
+		play.dropPiece(1);
+	}
+	Piece gameend = Invalid;
+	ASSERT_EQ(gameend, play.gameState());
+}
+
+TEST(PiezasTest, endTie){
+	Piezas play;
+	int i;
+	for(i = 0; i<4; i++){
+		play.dropPiece(i);
+		play.dropPiece(i);
+	}
+	//fill in last 4
+	for(i = 0; i < 4; i++){
+		play.dropPiece(i);
+	}
+	Piece gameend = Blank;
+	ASSERT_EQ(gameend, play.gameState());
+}
+
+//x will place pieces accross the bottom,
+//O will place randomly, and x will interfere.
+//will have 12 calls to dropPiece
+TEST(PiezasTest, endXWinRow){
+	Piezas play;
+	play.dropPiece(0);//x
+	play.dropPiece(0);
+	play.dropPiece(1);//x
+	play.dropPiece(0); // Last 0
+	play.dropPiece(2);//x
+	play.dropPiece(2);
+	play.dropPiece(3);//x garuntees x win
+	play.dropPiece(2); //Last 2
+	play.dropPiece(1);//x
+	play.dropPiece(3); 
+	play.dropPiece(1);//x last 1
+	play.dropPiece(3); //last 3
+	Piece winner = X;
+	ASSERT_EQ(winner, play.gameState());
+}
+
+//x will place pieces accross the bottom,
+//O will place randomly, and x will interfere.
+//will have 12 calls to dropPiece
+//final gamestate:
+// x x o x
+// o o o o
+// x o x x
+TEST(PiezasTest, endoWinRow){
+	Piezas play;
+	play.dropPiece(0);//1
+	play.dropPiece(0);
+	play.dropPiece(0);//x 3
+	play.dropPiece(1);
+	play.dropPiece(2);//x 5
+	play.dropPiece(1);
+	play.dropPiece(1);//x 7
+	play.dropPiece(2);
+	play.dropPiece(3);//x 9
+	play.dropPiece(3); 
+	play.dropPiece(3);//x 11
+	play.dropPiece(2); 
+	Piece winner = O;
+	ASSERT_EQ(winner, play.gameState());
+}
+
+//O should win with 3 vertical
+//final gamestate:
+// x o o x
+// o x o o
+// x x o x
+TEST(PiezasTest, endOWinCol){
+	Piezas play;
+	play.dropPiece(1);//1
+	play.dropPiece(2);
+	play.dropPiece(0);//x 3
+	play.dropPiece(2);
+	play.dropPiece(3);//x 5
+	play.dropPiece(0);
+	play.dropPiece(1);//x 7
+	play.dropPiece(1);
+	play.dropPiece(0);//x 9
+	play.dropPiece(3); 
+	play.dropPiece(3);//x 11
+	play.dropPiece(2); 
+	Piece winner = O;
+	ASSERT_EQ(winner, play.gameState());
+}
+
+//X should win with 3 vertical
+//final gamestate:
+// x x o o
+// x o x o
+// x o o x
+TEST(PiezasTest, endXWinCol){
+	Piezas play;
+	play.dropPiece(0);//1
+	play.dropPiece(2);
+	play.dropPiece(0);//x 3
+	play.dropPiece(1);
+	play.dropPiece(0);//x 5
+	play.dropPiece(1);
+	play.dropPiece(3);//x 7
+	play.dropPiece(3);
+	play.dropPiece(2);//x 9
+	play.dropPiece(3); 
+	play.dropPiece(1);//x 11
+	play.dropPiece(2); 
+	Piece winner = X;
+	ASSERT_EQ(winner, play.gameState());
 }

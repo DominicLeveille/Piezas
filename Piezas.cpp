@@ -109,17 +109,54 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-    //int xnum = 0; int xmax = 0;
-    //int onum = 0; int omax = 0;
-
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 3;j++){
+    int i, j;
+    //check if board full
+    for(i = 0; i < 4; i++){
+        for(j = 0; j < 3;j++){
             if(board[i][j] == Blank){
                 return Invalid;
             }
         }
     }
-    return X;
-    //bool conto = false;
-    //bool contx = false;  
+
+    int xnum = 0; int xmax = 0;
+    int onum = 0; int omax = 0;
+    Piece curr = Blank;
+    //checking columns first
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            curr = pieceAt(j, i);
+            if(curr == X){
+                onum=0;
+                xnum++;
+                if(xnum>xmax){xmax = xnum;}
+            }else if(curr == O){
+                xnum=0;
+                onum++;
+                if(onum>omax){omax = onum;}
+            }
+        }
+    }
+    onum=0; xnum=0; //reset
+    //now check rows
+    for(j=0; j<3; j++){
+        for(i=0; i<4; i++){
+            curr = pieceAt(j, i);
+            if(curr == X){
+                onum=0;
+                xnum++;
+                if(xnum>xmax){xmax = xnum;}
+            }else if(curr == O){
+                xnum=0;
+                onum++;
+                if(onum>omax){omax = onum;}
+            }
+        }
+    } 
+
+    if(xmax > omax){
+        return X;
+    }else if(omax > xmax){
+        return O;
+    }else{return Blank;}
 }
