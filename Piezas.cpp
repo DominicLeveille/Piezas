@@ -21,7 +21,14 @@
  * specifies it is X's turn first
 **/
 Piezas::Piezas()
+    :board(4, std::vector<Piece>(3))
 {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 3;j++){
+            board[i][j] = Blank;
+        }
+    }
+    turn = X;
 }
 
 /**
@@ -30,6 +37,11 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 3;j++){
+            board[i][j] = Blank;
+        }
+    }
 }
 
 /**
@@ -42,6 +54,32 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
+    if(column > 3 || column<0){
+        return Invalid;
+    }
+    Piece piecePlayed = turn;
+    bool valid = true;
+    //play a piece in the column
+    if(board[column][0]==Blank){
+        board[column][0] = turn;
+    }else if(board[column][1]==Blank){
+        board[column][1] = turn;
+    }else if(board[column][2]==Blank){
+        board[column][2] = turn;
+    }else {valid = false;}
+
+    //flip turn
+    if(turn == X){
+        turn = O;
+    }else if(turn == O){
+        turn = X;
+    }
+
+    //return the piece played if play was valid
+    //else return Invalid
+    if(valid){return piecePlayed;}
+    else{return Blank;}
+
     return Blank;
 }
 
@@ -51,7 +89,13 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+    if(row>2 || row<0 || column>3 || column<0){
+        return Invalid;
+    }
+    //Piece local;
+    //local = board[column][row];
+    //return local;
+    return board[column][row];
 }
 
 /**
@@ -65,5 +109,17 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-    return Blank;
+    //int xnum = 0; int xmax = 0;
+    //int onum = 0; int omax = 0;
+
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 3;j++){
+            if(board[i][j] == Blank){
+                return Invalid;
+            }
+        }
+    }
+    return X;
+    //bool conto = false;
+    //bool contx = false;  
 }
